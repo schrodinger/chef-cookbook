@@ -92,7 +92,7 @@ when 'debian'
     end
   end
 
-when 'rhel', 'fedora'
+when 'rhel', 'fedora', 'suse'
 
   # socat is a package dependency of rabbitmq-server
   package 'socat'
@@ -119,19 +119,6 @@ when 'rhel', 'fedora'
       action :create_if_missing
     end
     rpm_package "#{Chef::Config[:file_cache_path]}/#{node['rabbitmq']['rpm_package']}"
-  end
-
-when 'suse'
-  # rabbitmq-server-plugins needs to be first so they both get installed
-  # from the right repository. Otherwise, zypper will stop and ask for a
-  # vendor change.
-  package 'rabbitmq-server-plugins' do
-    action :install
-    version node['rabbitmq']['version']
-  end
-  package 'rabbitmq-server' do
-    action :install
-    version node['rabbitmq']['version'] if node['rabbitmq']['pin_distro_version']
   end
 
 when 'smartos'
